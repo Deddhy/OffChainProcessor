@@ -1,0 +1,132 @@
+package org.example;						package org.example;
+
+import java.io.BufferedWriter;					import java.io.BufferedWriter;
+import java.io.File;						import java.io.File;
+import java.io.FileWriter;					import java.io.FileWriter;
+import java.io.IOException;					import java.io.IOException;
+import java.net.URL;						import java.net.URL;
+import java.util.List;						import java.util.List;
+import java.util.Scanner;					import java.util.Scanner;
+
+public class Utils {						public class Utils {
+
+	//private String pathToDrl = "src"+File.separator+"ma |	    //private String pathToDrl = "src"+File.separator+"main"+
+	//		"org"+File.separator+"example"+File.s |	    //		"org"+File.separator+"example"+File.separator
+
+	static File ruleFile=null;			      |	    static File ruleFile = null;
+
+	private String getRulesFile() {			      |	    private String getRulesFile() {
+		if(ruleFile==null) {			      |	        if (ruleFile == null) {
+			try {				      |	            try {
+				ruleFile=File.createTempFile( |	                ruleFile = File.createTempFile("current", "Ru
+			} catch (IOException e) {	      |	            } catch (IOException e) {
+				// TODO Auto-generated catch  |	                // TODO Auto-generated catch block
+				e.printStackTrace();	      |	                e.printStackTrace();
+			}				      |	            }
+		}					      |	        }
+		System.out.println("PATH:"+ruleFile.getAbsolu |	        System.out.println("PATH:" + ruleFile.getAbsolutePath
+		return ruleFile.getAbsolutePath();	      |	        return ruleFile.getAbsolutePath();
+	}						      |	    }
+							      |
+	public void insertRule(String rule) throws Exception  |	    public void insertRule(String rule) throws Exception {
+		File file = new File(getRulesFile());	      |	        File file = new File(getRulesFile());
+		String data = " ";			      |	        String data = " ";
+		Scanner myReader = new Scanner(file);	      |	        Scanner myReader = new Scanner(file);
+		while (myReader.hasNextLine()) {	      |	        while (myReader.hasNextLine()) {
+			data += myReader.nextLine() + "\n";   |	            data += myReader.nextLine() + "\n";
+		}					      |	        }
+		rule.replace("\t\t\t\t\t", "\n");	      |	        rule.replace("\t\t\t\t\t", "\n");
+		data += rule + "\n";			      |	        data += rule + "\n";
+		//data += "end";			      |	        //data += "end";
+							      |
+		myReader.close();			      |	        myReader.close();
+							      |
+		BufferedWriter writ = new BufferedWriter(new  |	        BufferedWriter writ = new BufferedWriter(new FileWrit
+		writ.write(data);			      |	        writ.write(data);
+		writ.close();				      |	        writ.close();
+							      |
+	}						      |	    }
+							      |
+	public void insertRules(String rule) throws Exception |	    public void insertRules(String rule) throws Exception {
+		FileWriter wChor = new FileWriter(getRulesFil |	        FileWriter wChor = new FileWriter(getRulesFile());
+		BufferedWriter bChor = new BufferedWriter(wCh |	        BufferedWriter bChor = new BufferedWriter(wChor);
+
+
+							      |	        String data = " ";
+		String data = " ";			      <
+		/* for (String rule: rules) {					/* for (String rule: rules) {
+            data += rule;					            data += rule;
+        }*/							        }*/
+		String initial = "import java.util.List\n" +  |	        String initial = "import java.util.List\n" +
+				"import java.util.Arrays\n" + |	                "import java.util.Arrays\n" +
+				"import org.example.Blockchai |	                "import org.example.BlockchainUtils\n\n";
+		bChor.write(initial + rule);		      |	        bChor.write(initial + rule);
+		bChor.flush();				      |	        bChor.flush();
+		bChor.close();				      |	        bChor.close();
+							      |
+	}						      |	    }
+							      |
+	public void modifyRule(String rule, String idToChange |	    public void modifyRule(String rule, String idToChange) th
+		File file = new File(getRulesFile());	      |	        File file = new File(getRulesFile());
+		String data = " ";			      |	        String data = " ";
+		Scanner myReader = new Scanner(file);	      |	        Scanner myReader = new Scanner(file);
+		int delete = 0;				      |	        int delete = 0;
+		while (myReader.hasNextLine()) {	      |	        while (myReader.hasNextLine()) {
+			String buffer = myReader.nextLine();  |	            String buffer = myReader.nextLine();
+			if(delete == 1 && !(buffer.contains(" |	            if (delete == 1 && !(buffer.contains("end"))) {
+				data += " ";		      |	                data += " ";
+			} else if(delete == 1 && buffer.conta |	            } else if (delete == 1 && buffer.contains("end"))
+				delete = 0;		      |	                delete = 0;
+				data += " ";		      |	                data += " ";
+			}else if(delete == 0 && (buffer.conta |	            } else if (delete == 0 && (buffer.contains(idToCh
+				delete = 1;		      |	                delete = 1;
+				data += " ";		      |	                data += " ";
+			} else {			      |	            } else {
+				//System.out.println(myReader |	                //System.out.println(myReader.nextLine());
+				data += buffer + "\n";	      |	                data += buffer + "\n";
+			}				      |	            }
+							      |
+		}					      |	        }
+		myReader.close();			      |	        myReader.close();
+		//System.out.println(data);		      |	        //System.out.println(data);
+		data += rule + "\n";			      |	        data += rule + "\n";
+		data += "end";				      |	        data += "end";
+		BufferedWriter writ = new BufferedWriter(new  |	        BufferedWriter writ = new BufferedWriter(new FileWrit
+		writ.write(data);			      |	        writ.write(data);
+		writ.close();				      |	        writ.close();
+	}						      |	    }
+							      |
+							      |
+	public void removeRule(String ruleID) throws Exceptio |	    public void removeRule(String ruleID) throws Exception {
+		File file = new File(getRulesFile());	      |	        File file = new File(getRulesFile());
+		String data = " ";			      |	        String data = " ";
+		Scanner myReader = new Scanner(file);	      |	        Scanner myReader = new Scanner(file);
+		int delete = 0;				      |	        int delete = 0;
+		while (myReader.hasNextLine()) {	      |	        while (myReader.hasNextLine()) {
+			String buffer = myReader.nextLine();  |	            String buffer = myReader.nextLine();
+			if(delete == 1 && !(buffer.contains(" |	            if (delete == 1 && !(buffer.contains("end"))) {
+				data += " ";		      |	                data += " ";
+			} else if(delete == 1 && buffer.conta |	            } else if (delete == 1 && buffer.contains("end"))
+				delete = 0;		      |	                delete = 0;
+				data += " ";		      |	                data += " ";
+			}else if(delete == 0 && (buffer.conta |	            } else if (delete == 0 && (buffer.contains(ruleID
+				delete = 1;		      |	                delete = 1;
+				data += " ";		      |	                data += " ";
+			} else {			      |	            } else {
+				data += buffer + "\n";	      |	                data += buffer + "\n";
+			}				      |	            }
+							      |
+		}					      |	        }
+		myReader.close();			      |	        myReader.close();
+							      |
+		BufferedWriter writ = new BufferedWriter(new  |	        BufferedWriter writ = new BufferedWriter(new FileWrit
+		writ.write(data);			      |	        writ.write(data);
+		writ.close();				      |	        writ.close();
+	}						      |	    }
+							      <
+							      <
+							      <
+
+
+}								}
+
